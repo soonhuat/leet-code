@@ -1,34 +1,34 @@
-func findUsedKey(target string, list []string) bool {
-	for _, v := range list {
-		if v == target {
-			return true
-		}
-	}
-	return false
+
+
+func increaseThreeIndex(first, length int) (int, int, int) {
+	first++
+	return first, (first + 1), length
 }
 
 func threeSum(nums []int) [][]int {
-	length := len(nums)
-	sorted := make([]int, length)
-	numsMap := make(map[int]int)
-	usedMap := make(map[int][]string)
-	copy(sorted, nums)
-	sort.Ints(sorted)
+	length := len(nums) - 1
+	first, second, third := 0, 1, length
+	sort.Ints(nums)
 	var result = [][]int{}
 
-	for k, v := range sorted {
-		numsMap[v] = k
-	}
-	for index := 0; index < length; index++ {
-		for inner := index + 1; inner < length; inner++ {
-			finding := 0 - sorted[index] - sorted[inner]
-			if v, exist := numsMap[finding]; exist && v > inner {
-				usedKey := fmt.Sprintf("%s-%s", sorted[inner], finding)
-				if usedVal, found := usedMap[sorted[index]]; !found || found && !findUsedKey(usedKey, usedVal) {
-					usedMap[sorted[index]] = append(usedMap[sorted[index]], usedKey)
-					result = append(result, []int{sorted[index], sorted[inner], finding})
-				}
+	for first < third {
+		total := nums[first] + nums[second] + nums[third]
+		if total == 0 {
+			result = append(result, []int{nums[first], nums[second], nums[third]})
+			second++
+			for second < length && nums[second] == nums[second-1] {
+				second++
 			}
+			if third < length {
+				third++
+			}
+		} else if total > 0 {
+			third--
+		} else if total < 0 {
+			second++
+		}
+		for first < length && (second >= third || first > 0 && nums[first] == nums[first-1]) {
+			first, second, third = increaseThreeIndex(first, length)
 		}
 	}
 	return result
